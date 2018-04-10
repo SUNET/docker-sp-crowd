@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM docker.sunet.se/eduix/eduix-base:latest
 MAINTAINER juha@eduix.fi
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN apt-get -q update
@@ -20,7 +20,6 @@ ADD secure /var/www/secure
 RUN chmod a+rx /var/www/secure/index.cgi
 COPY /apache2.conf /etc/apache2/
 ADD shibd.logger /etc/shibboleth/shibd.logger
-ADD index.php /var/www/
 EXPOSE 443
 EXPOSE 80
 ENTRYPOINT ["/start.sh"]
