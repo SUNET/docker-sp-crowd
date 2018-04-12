@@ -74,87 +74,16 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
             <Handler type="Session" Location="/Session" showAttributeValues="false"/>
             <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
 
+            <SessionInitiator type="Chaining" Location="/DS/Login" id="swamid-ds-default" relayState="cookie">
+               <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
+               <SessionInitiator type="Shib1" defaultACSIndex="5"/>
+               <SessionInitiator type="SAMLDS" URL="https://md.nordu.net/role/idp.ds"/>
+            </SessionInitiator>
+
             <md:AssertionConsumerService Location="/SAML2/POST"
                                          index="1"
                                          Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
                                          conf:ignoreNoPassive="true" />
-
-            <SessionInitiator type="Chaining" Location="/DS/nordu.net" id="md.nordu.net" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-                <SessionInitiator type="Shib1" defaultACSIndex="5"/>
-                <SessionInitiator type="SAMLDS" URL="http://md.nordu.net/role/idp.ds"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/DS/kalmar2" id="kalmar2.org" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-                <SessionInitiator type="Shib1" defaultACSIndex="5"/>
-                <SessionInitiator type="SAMLDS" URL="https://kalmar2.org/simplesaml/module.php/discopower/disco.php"/>
-            </SessionInitiator>
- 
-            <SessionInitiator type="Chaining" Location="/Login/feide" id="idp.feide.no" relayState="cookie" entityID="https://idp.feide.no">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/DS/haka.funet.fi" id="haka.funet.fi" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-                <SessionInitiator type="Shib1" defaultACSIndex="5"/>
-                <SessionInitiator type="SAMLDS" URL="https://haka.funet.fi/shibboleth/WAYF"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/Login/idp.funet.fi" id="funet" 
-                relayState="cookie" entityID="https://idp.funet.fi/esso">
-                <SessionInitiator type="SAML2" acsIndex="1" template="bindingTemplate.html"/>
-                <SessionInitiator type="Shib1" acsIndex="5"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/Login/eduid-dev" id="eduid-dev" entityID="https://dev.idp.eduid.se/idp.xml" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/Login/eduid" id="eduid" entityID="https://idp.eduid.se/idp.xml" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-            </SessionInitiator>
-   
-            <SessionInitiator type="Chaining" Location="/Login/unitedid" id="unitedid" entityID="https://idp.unitedid.org/idp/shibboleth" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/DS/kalmar2" id="kalmar2" relayState="cookie">
-                <SessionInitiator type="SAMLDS" defaultACSIndex="5" URL="https://kalmar2.org/simplesaml/module.php/discopower/disco.php"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/DS/nightly.pyff.io" id="pyff-test" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-                <SessionInitiator type="SAMLDS" defaultACSIndex="5" URL="http://nightly.pyff.io/role/idp.ds"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/DS/md.nordu.net" id="md.nordu.net" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-                <SessionInitiator type="SAMLDS" defaultACSIndex="5" URL="https://md.nordu.net/role/idp.ds"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/DS/loopback" id="loopback" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-                <SessionInitiator type="SAMLDS" defaultACSIndex="5" URL="http://localhost:8080/role/idp.ds"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/Login/box-idp.sunet.se" id="box-idp.sunet.se"
-                        entityID="https://box-idp.sunet.se/simplesaml/saml2/idp/metadata.php" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/Login/box-idp.nordu.net" id="box-idp.nordu.net"
-                        entityID="https://box-idp.nordu.net/simplesaml/saml2/idp/metadata.php" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="Chaining" Location="/Login/openidp" id="openidp"
-                        entityID="https://openidp.feide.no" relayState="cookie">
-                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-            </SessionInitiator>
-
-            <SessionInitiator type="SAML2" Location="/Login/necs.sll.se" id="necs.sll.se" relayState="cookie" 
-			      entityID="necs.sll.se" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
 
         </Sessions>
 
@@ -165,15 +94,6 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
         <MetadataProvider type="XML" uri="http://mds.swamid.se/md/swamid-idp-transitive.xml"
            backingFilePath="swamid-1.0.xml" reloadInterval="300">
            <SignatureMetadataFilter certificate="md-signer2.crt"/>
-        </MetadataProvider>
-
-        <MetadataProvider type="XML" uri="http://mds.swamid.se/md/swamid-ki-sll-1.0.xml"
-           backingFilePath="swamid-ki-sll-1.0.xml" reloadInterval="300">
-           <SignatureMetadataFilter certificate="md-signer2.crt"/>
-        </MetadataProvider>
-
-        <MetadataProvider type="XML" uri="http://md.unitedid.org/idp.xml"
-            backingFilePath="unitedid.xml" reloadInterval="300">
         </MetadataProvider>
 
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
