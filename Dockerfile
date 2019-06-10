@@ -1,4 +1,4 @@
-FROM docker.sunet.se/eduix/eduix-base:latest
+FROM docker.sunet.se/eduix/eduix-base:stable
 MAINTAINER juha@eduix.fi
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN apt-get -q update
