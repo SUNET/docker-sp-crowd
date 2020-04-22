@@ -1,24 +1,48 @@
 docker_name: eduix/sp-crowd
-docker_tags:
-    - "${GIT_LOCAL_BRANCH}"
+builders:
+  - script
+script:
+  - "echo \"Dummy job for starting branch specific ones\""
 git:
-    branches:
-        - master
-        - stable
-        - staging
-    extensions:
-        checkout_local_branch: true
+  branches:
+    - master
+    - stable
+    - staging
+  extensions:
+    checkout_local_branch: true
 clean_workspace: true
+downstream:
+  - docker-sp-crowd-master
+  - docker-sp-crowd-staging
+  - docker-sp-crowd-stable
 
 extra_jobs:
     - name: docker-sp-crowd-daily
       builders:
         - docker
-      docker_name: eduix/sp-crowd
       git:
         branch: master
-        extensions:
-            checkout_local_branch: true
       triggers:
         github_push: false
-        cron: @daily
+        cron: "@daily"
+    - name: docker-sp-crowd-master
+      builders:
+        - docker
+      docker_tags:
+        - "master"
+      git:
+        branch: master
+    - name: docker-sp-crowd-staging
+      builders:
+        - docker
+      docker_tags:
+        - "staging"
+      git:
+        branch: staging
+    - name: docker-sp-crowd-stable
+      builders:
+        - docker
+      docker_tags:
+        - "stable"
+      git:
+        branch: stable
