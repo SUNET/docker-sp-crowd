@@ -77,7 +77,7 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
             <SessionInitiator type="Chaining" Location="/DS/Login" id="swamid-ds-default" relayState="cookie">
                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
                <SessionInitiator type="Shib1" defaultACSIndex="5"/>
-               <SessionInitiator type="SAMLDS" URL="https://md.nordu.net/role/idp.ds"/>
+               <SessionInitiator type="SAMLDS" URL="https://service.seamlessaccess.org/ds"/>
             </SessionInitiator>
 
             <md:AssertionConsumerService Location="/SAML2/POST"
