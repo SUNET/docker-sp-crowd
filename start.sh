@@ -77,7 +77,7 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
             <SessionInitiator type="Chaining" Location="/DS/Login" id="swamid-ds-default" relayState="cookie">
                <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
                <SessionInitiator type="Shib1" defaultACSIndex="5"/>
-               <SessionInitiator type="SAMLDS" URL="https://md.nordu.net/role/idp.ds"/>
+               <SessionInitiator type="SAMLDS" URL="https://service.seamlessaccess.org/ds"/>
             </SessionInitiator>
 
             <md:AssertionConsumerService Location="/SAML2/POST"
@@ -93,7 +93,7 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
 
         <MetadataProvider type="XML" uri="http://mds.swamid.se/md/swamid-idp-transitive.xml"
            backingFilePath="swamid-1.0.xml" reloadInterval="300">
-           <SignatureMetadataFilter certificate="md-signer2.crt"/>
+           <MetadataFilter type="Signature" certificate="md-signer2.crt"/>
         </MetadataProvider>
 
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
