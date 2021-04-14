@@ -26,6 +26,17 @@ if [ "x${SESSION_REDIRECT_WHITELIST}" = "x" ]; then
    SESSION_REDIRECT_WHITELIST=""
 fi
 
+CONSOLE_RESTRICT=""
+if [ "x${CROWD_CONSOLE_RESTRICTIONS}" -ne "x" ]; then
+   CONSOLE_RESTRICT="        <Location /crowd/console>\n"
+   IFS=","
+   for require in "${CROWD_CONSOLE_RESTRICTIONS}"; do
+      CONSOLE_RESTRICT="          ${CONSOLE_RESTRICT}${require}\n"
+   done
+   CONSOLE_RESTRICT="${CONSOLE_RESTRICT}        </Location>"
+fi 
+
+
 KEYDIR=/etc/ssl
 mkdir -p $KEYDIR
 export KEYDIR
@@ -199,6 +210,8 @@ ServerName ${SP_HOSTNAME}
            ProxyPass http://crowd:8095/crowd/plugins/servlet/ssocookie
            ProxyPassReverse http://crowd:8095/crowd/plugins/servlet/ssocookie
         </Location>
+
+${CONSOLE_RESTRICT}
 
         <Location /secure>
            AuthType shibboleth
