@@ -27,7 +27,7 @@ if [ "x${SESSION_REDIRECT_WHITELIST}" = "x" ]; then
 fi
 
 CONSOLE_RESTRICT=""
-if [ "x${CROWD_CONSOLE_RESTRICTIONS}" -ne "x" ]; then
+if [ "x${CROWD_CONSOLE_RESTRICTIONS}" != "x" ]; then
    CONSOLE_RESTRICT="        <Location /crowd/console>\n"
    IFS=","
    for require in "${CROWD_CONSOLE_RESTRICTIONS}"; do
