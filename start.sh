@@ -18,6 +18,22 @@ if [ "x${DEFAULT_LOGIN}" = "x" ]; then
    DEFAULT_LOGIN="md.nordu.net" 
 fi
 
+if [ "x${SESSION_REDIRECT_LIMIT}" = "x" ]; then
+   SESSION_REDIRECT_LIMIT="none"
+fi
+
+if [ "x${SESSION_REDIRECT_WHITELIST}" = "x" ]; then
+   SESSION_REDIRECT_WHITELIST=""
+fi
+
+CONSOLE_RESTRICT=""
+if [ "x${CROWD_CONSOLE_RESTRICTIONS}" != "x" ]; then
+    CONSOLE_RESTRICT="<Location /crowd/console>
+$(echo "${CROWD_CONSOLE_RESTRICTIONS}" | sed 's/,/\n/g')
+</Location>"
+fi 
+
+
 KEYDIR=/etc/ssl
 mkdir -p $KEYDIR
 export KEYDIR
@@ -67,7 +83,8 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
                          REMOTE_USER="eppn persistent-id targeted-id">
 
         <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
-                  checkAddress="false" handlerSSL="true" cookieProps="https">
+                  checkAddress="false" handlerSSL="true" cookieProps="https"
+                  redirectLimit="${SESSION_REDIRECT_LIMIT}" redirectWhitelist="${SESSION_REDIRECT_WHITELIST}">
             <Logout>SAML2 Local</Logout>
             <Handler type="MetadataGenerator" Location="/Metadata" signing="false"/>
             <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
@@ -190,6 +207,8 @@ ServerName ${SP_HOSTNAME}
            ProxyPass http://crowd:8095/crowd/plugins/servlet/ssocookie
            ProxyPassReverse http://crowd:8095/crowd/plugins/servlet/ssocookie
         </Location>
+
+${CONSOLE_RESTRICT}
 
         <Location /secure>
            AuthType shibboleth
