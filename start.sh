@@ -28,12 +28,9 @@ fi
 
 CONSOLE_RESTRICT=""
 if [ "x${CROWD_CONSOLE_RESTRICTIONS}" != "x" ]; then
-   CONSOLE_RESTRICT="        <Location /crowd/console>\n"
-   IFS=","
-   for require in "${CROWD_CONSOLE_RESTRICTIONS}"; do
-      CONSOLE_RESTRICT="          ${CONSOLE_RESTRICT}${require}\n"
-   done
-   CONSOLE_RESTRICT="${CONSOLE_RESTRICT}        </Location>"
+    CONSOLE_RESTRICT="<Location /crowd/console>
+$(echo "${CROWD_CONSOLE_RESTRICTIONS}" | sed 's/,/\n/g')
+</Location>"
 fi 
 
 
