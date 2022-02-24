@@ -191,6 +191,7 @@ ServerName ${SP_HOSTNAME}
            ShibRequireSession Off
            require shibboleth
            ShibUseHeaders on
+           ShibRequestSetting encoding URL
 
            ProxyPreserveHost On
            ProxyPass http://crowd:8095/crowd
@@ -202,6 +203,7 @@ ServerName ${SP_HOSTNAME}
            ShibRequireSession On
            require shibboleth
            ShibUseHeaders on
+           ShibRequestSetting encoding URL
 
            ProxyPreserveHost On
            ProxyPass http://crowd:8095/crowd/plugins/servlet/ssocookie
