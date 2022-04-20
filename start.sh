@@ -31,7 +31,7 @@ if [ "x${CROWD_CONSOLE_RESTRICTIONS}" != "x" ]; then
     CONSOLE_RESTRICT="<Location /crowd/console>
 $(echo "${CROWD_CONSOLE_RESTRICTIONS}" | sed 's/,/\n/g')
 </Location>"
-fi 
+fi
 
 
 KEYDIR=/etc/ssl
@@ -71,12 +71,12 @@ EOF
 a2enconf acme
 
 cat>/etc/shibboleth/shibboleth2.xml<<EOF
-<SPConfig xmlns="urn:mace:shibboleth:2.0:native:sp:config"
-    xmlns:conf="urn:mace:shibboleth:2.0:native:sp:config"
+<SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
     xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
-    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"    
+    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
-    logger="shibboleth/syslog.logger"
+    logger="/etc/shibboleth/shibd.logger"
     clockSkew="180">
 
     <ApplicationDefaults entityID="https://${SP_HOSTNAME}/shibboleth"
@@ -84,7 +84,7 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
 
         <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
                   checkAddress="false" handlerSSL="true" cookieProps="https"
-                  redirectLimit="${SESSION_REDIRECT_LIMIT}" redirectWhitelist="${SESSION_REDIRECT_WHITELIST}">
+                  redirectLimit="${SESSION_REDIRECT_LIMIT}" redirectAllow="${SESSION_REDIRECT_WHITELIST}">
             <Logout>SAML2 Local</Logout>
             <Handler type="MetadataGenerator" Location="/Metadata" signing="false"/>
             <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
@@ -92,8 +92,8 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
             <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
 
             <SessionInitiator type="Chaining" Location="/DS/Login" id="swamid-ds-default" relayState="cookie">
-               <SessionInitiator type="SAML2" defaultACSIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
-               <SessionInitiator type="Shib1" defaultACSIndex="5"/>
+               <SessionInitiator type="SAML2" acsIndex="1" acsByIndex="false" template="bindingTemplate.html"/>
+               <SessionInitiator type="Shib1" acsIndex="5"/>
                <SessionInitiator type="SAMLDS" URL="https://service.seamlessaccess.org/ds"/>
             </SessionInitiator>
 
@@ -108,8 +108,8 @@ cat>/etc/shibboleth/shibboleth2.xml<<EOF
             helpLocation="${SP_ABOUT}"
             styleSheet="/shibboleth-sp/main.css"/>
 
-        <MetadataProvider type="XML" uri="http://mds.swamid.se/md/swamid-idp-transitive.xml"
-           backingFilePath="swamid-1.0.xml" reloadInterval="300">
+        <MetadataProvider type="XML" url="http://mds.swamid.se/md/swamid-idp-transitive.xml"
+           backingFilePath="swamid-1.0.xml" reloadInterval="900">
            <MetadataFilter type="Signature" certificate="md-signer2.crt"/>
         </MetadataProvider>
 
@@ -157,7 +157,7 @@ ServerName ${SP_HOSTNAME}
         ${CHAINSPEC}
         SSLCertificateKeyFile $KEYDIR/private/${SP_HOSTNAME}.key
         DocumentRoot /var/www/
-        
+
         Alias /shibboleth-sp/ /usr/share/shibboleth/
 
         ServerName ${SP_HOSTNAME}
@@ -182,15 +182,16 @@ ServerName ${SP_HOSTNAME}
 
         ProxyRequests Off
         ProxyPreserveHost On
- 
+
         # Preserve the original IP for crowd
         RemoteIPHeader X-Forwarded-For
- 
+
         <Location /crowd>
            AuthType shibboleth
            ShibRequireSession Off
            require shibboleth
            ShibUseHeaders on
+           ShibRequestSetting encoding URL
 
            ProxyPreserveHost On
            ProxyPass http://crowd:8095/crowd
@@ -202,6 +203,7 @@ ServerName ${SP_HOSTNAME}
            ShibRequireSession On
            require shibboleth
            ShibUseHeaders on
+           ShibRequestSetting encoding URL
 
            ProxyPreserveHost On
            ProxyPass http://crowd:8095/crowd/plugins/servlet/ssocookie
